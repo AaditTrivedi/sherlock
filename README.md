@@ -6,7 +6,13 @@ Feed Sherlock your application logs and an incident question — *"why did check
 
 This isn't a chatbot that answers in one shot. It's an **agent** that drives a multi-step investigation on its own, deciding which tools to call and when.
 
-![status](https://img.shields.io/badge/tests-38%20passing-brightgreen) ![python](https://img.shields.io/badge/python-3.12-blue) ![react](https://img.shields.io/badge/react-18-blue) ![license](https://img.shields.io/badge/license-MIT-green)
+![status](https://img.shields.io/badge/tests-46%20passing-brightgreen) ![python](https://img.shields.io/badge/python-3.12-blue) ![react](https://img.shields.io/badge/react-18-blue) ![license](https://img.shields.io/badge/license-MIT-green)
+
+## Demo
+
+![Sherlock investigating a live incident](assets/demo.png)
+
+*Sherlock autonomously investigating a checkout incident: it analyzed log stats, searched the logs, retrieved the relevant runbook via RAG, and reasoned to a root cause — all driven by an LLM via tool-calling.*
 
 ## Why I built this
 
