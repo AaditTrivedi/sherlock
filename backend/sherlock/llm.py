@@ -20,6 +20,23 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 
+def _parse_tool_arguments(raw) -> dict:
+    """
+    Parse tool-call arguments from an OpenAI-compatible response into a dict.
+
+    Providers are inconsistent for no-argument tools: some return "{}", some
+    return "" or None, and some (e.g. Groq) return the JSON literal "null",
+    which json.loads turns into Python None. Normalize all of these to {}.
+    """
+    if not raw:
+        return {}
+    try:
+        parsed = json.loads(raw)
+    except (json.JSONDecodeError, TypeError):
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
 class LLMResponse:
     """Normalized LLM response across providers."""
 
@@ -143,7 +160,7 @@ class OpenAICompatibleLLM(BaseLLM):
             for tc in msg.tool_calls:
                 tool_calls.append({
                     "id": tc.id, "name": tc.function.name,
-                    "input": json.loads(tc.function.arguments or "{}"),
+                    "input": _parse_tool_arguments(tc.function.arguments),
                 })
         return LLMResponse(text=msg.content, tool_calls=tool_calls)
 

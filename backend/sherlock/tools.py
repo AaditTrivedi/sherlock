@@ -55,6 +55,7 @@ TOOL_SCHEMAS = [
 
 def execute_tool(name: str, tool_input: dict, ctx: SessionContext) -> str:
     """Dispatch a tool call to its implementation and return a string observation."""
+    tool_input = tool_input or {}
     if name == "search_logs":
         return _search_logs(tool_input.get("query", ""), tool_input.get("level"), ctx)
     if name == "retrieve_runbook":

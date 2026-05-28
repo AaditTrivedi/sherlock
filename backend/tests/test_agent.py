@@ -1,6 +1,30 @@
 """Tests for the agent loop and LLM abstraction."""
 
-from sherlock.llm import MockLLM, LLMResponse, get_llm
+from sherlock.llm import MockLLM, LLMResponse, get_llm, _parse_tool_arguments
+
+
+class TestParseToolArguments:
+    def test_valid_dict(self):
+        assert _parse_tool_arguments('{"query": "redis"}') == {"query": "redis"}
+
+    def test_empty_braces(self):
+        assert _parse_tool_arguments("{}") == {}
+
+    def test_none(self):
+        assert _parse_tool_arguments(None) == {}
+
+    def test_empty_string(self):
+        assert _parse_tool_arguments("") == {}
+
+    def test_json_null_literal(self):
+        # Groq returns "null" for no-argument tools; must become {}
+        assert _parse_tool_arguments("null") == {}
+
+    def test_non_dict_json(self):
+        assert _parse_tool_arguments("[1, 2, 3]") == {}
+
+    def test_malformed_json(self):
+        assert _parse_tool_arguments("{not valid}") == {}
 from sherlock.agent import run_investigation
 from sherlock.tools import SessionContext
 from sherlock.ingest import parse_logs
