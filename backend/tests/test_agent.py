@@ -73,7 +73,15 @@ class TestAgentLoop:
 
 class TestGetLLM:
     def test_falls_back_to_mock_without_keys(self, monkeypatch):
-        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-        monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+        for key in ("GROQ_API_KEY", "GEMINI_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
+            monkeypatch.delenv(key, raising=False)
         llm = get_llm()
         assert llm.mode == "mock"
+
+    def test_groq_selected_when_key_present(self, monkeypatch):
+        for key in ("GEMINI_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
+            monkeypatch.delenv(key, raising=False)
+        monkeypatch.setenv("GROQ_API_KEY", "test-key")
+        llm = get_llm()
+        assert llm.provider == "groq"
+        assert llm.mode == "live"

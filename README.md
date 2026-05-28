@@ -92,11 +92,18 @@ The agent chose that sequence itself. With a different incident, it investigates
 cd backend
 pip install -r requirements.txt
 
-# Optional: use a real LLM (otherwise runs in deterministic mock mode)
-export ANTHROPIC_API_KEY=sk-...      # or OPENAI_API_KEY=sk-...
+# Optional: use a real LLM (otherwise runs in deterministic mock mode).
+# Free options — no credit card required:
+export GROQ_API_KEY=gsk_...          # free + fast, runs Llama 3.3 70B  (recommended)
+# export GEMINI_API_KEY=...          # free tier, runs Gemini 2.0 Flash
+# Or paid providers:
+# export ANTHROPIC_API_KEY=sk-...    # Claude
+# export OPENAI_API_KEY=sk-...       # GPT
 
 uvicorn sherlock.main:app --reload
 ```
+
+Sherlock auto-detects which provider to use from whichever key is set (Groq → Gemini → Anthropic → OpenAI → offline mock). Override the model with `SHERLOCK_LLM_MODEL` if you want a different one.
 
 ### Frontend
 
